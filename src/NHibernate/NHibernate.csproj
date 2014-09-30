@@ -137,7 +137,6 @@
     <Compile Include="Connection\DriverConnectionProvider.cs" />
     <Compile Include="Connection\IConnectionProvider.cs" />
     <Compile Include="Connection\UserSuppliedConnectionProvider.cs" />
-    <Compile Include="Criterion\IEnhancedProjection.cs" />
     <Compile Include="Dialect\DB2Dialect.cs" />
     <Compile Include="Dialect\Dialect.cs" />
     <Compile Include="Dialect\FirebirdDialect.cs" />
@@ -153,6 +152,9 @@
     <Compile Include="Dialect\MsSql2012Dialect.cs" />
     <Compile Include="Dialect\MsSql7Dialect.cs" />
     <Compile Include="Dialect\MsSqlAzure2008Dialect.cs" />
+    <Compile Include="Dialect\MySQL55Dialect.cs" />
+    <Compile Include="Dialect\MySQL55InnoDBDialect.cs" />
+    <Compile Include="Dialect\MySQL5InnoDBDialect.cs" />
     <Compile Include="Dialect\MySQLDialect.cs" />
     <Compile Include="Dialect\PostgreSQLDialect.cs" />
     <Compile Include="Dialect\Schema\PostgreSQLMetadata.cs" />
@@ -284,6 +286,7 @@
     <Compile Include="Linq\Clauses\NhWithClause.cs" />
     <Compile Include="Linq\ExpressionTransformers\RemoveCharToIntConversion.cs" />
     <Compile Include="Linq\ExpressionTransformers\RemoveRedundantCast.cs" />
+    <Compile Include="Linq\Functions\ConvertGenerator.cs" />
     <Compile Include="Linq\Functions\GetValueOrDefaultGenerator.cs" />
     <Compile Include="Linq\Functions\MathGenerator.cs" />
     <Compile Include="Linq\Functions\DictionaryGenerator.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="Linq\NestedSelects\NestedSelectRewriter.cs" />
     <Compile Include="Linq\Visitors\SelectJoinDetector.cs" />
     <Compile Include="Linq\Visitors\SelectClauseNominator.cs" />
+    <Compile Include="Linq\Visitors\SimplifyConditionalVisitor.cs" />
     <Compile Include="Linq\Visitors\SubQueryFromClauseFlattener.cs" />
     <Compile Include="Linq\Visitors\VisitorUtil.cs" />
     <Compile Include="Linq\Visitors\WhereJoinDetector.cs" />
@@ -349,7 +353,9 @@
     <Compile Include="Mapping\ByCode\Impl\CustomizersImpl\ManyToAnyCustomizer.cs" />
     <Compile Include="Mapping\ByCode\Impl\DynamicComponentMapper.cs" />
     <Compile Include="Mapping\ByCode\Impl\ManyToAnyMapper.cs" />
+    <Compile Include="Mapping\ByCode\OptimisticLockMode.cs" />
     <Compile Include="Mapping\ByCode\Import.cs" />
+    <Compile Include="Mapping\ByCode\PolymorphismType.cs" />
     <Compile Include="Mapping\ByCode\PropertyGeneration.cs" />
     <Compile Include="Mapping\ByCode\PropertyToField.cs" />
     <Compile Include="Mapping\ByCode\SimpleModelInspector.cs" />
@@ -494,6 +500,7 @@
     <Compile Include="Mapping\ByCode\NotFoundMode.cs" />
     <Compile Include="Mapping\ByCode\SchemaAction.cs" />
     <Compile Include="Mapping\ByCode\TypeExtensions.cs" />
+    <Compile Include="Mapping\ByCode\UnsavedValueType.cs" />
     <Compile Include="Mapping\ByCode\VersionGeneration.cs" />
     <Compile Include="Mapping\Collection.cs" />
     <Compile Include="Mapping\Column.cs" />
@@ -638,8 +645,12 @@
     <Compile Include="TransactionException.cs" />
     <Compile Include="Transaction\AdoNetWithDistributedTransactionFactory.cs" />
     <Compile Include="Transaction\AdoTransaction.cs" />
+    <Compile Include="Transaction\AfterTransactionCompletes.cs" />
     <Compile Include="Transaction\ITransactionFactory.cs" />
     <Compile Include="Transform\AliasToEntityMapResultTransformer.cs" />
+    <Compile Include="Transform\CacheableResultTransformer.cs" />
+    <Compile Include="Transform\AliasedTupleSubsetResultTransformer.cs" />
+    <Compile Include="Transform\ITupleSubsetResultTransformer.cs" />
     <Compile Include="Transform\DistinctRootEntityResultTransformer.cs" />
     <Compile Include="Transform\IResultTransformer.cs" />
     <Compile Include="Transform\RootEntityResultTransformer.cs" />
@@ -647,7 +658,6 @@
     <Compile Include="Type\AbstractType.cs" />
     <Compile Include="Type\AnsiStringType.cs" />
     <Compile Include="Type\ArrayType.cs" />
-    <Compile Include="Type\BagType.cs" />
     <Compile Include="Type\BinaryBlobType.cs" />
     <Compile Include="Type\BinaryType.cs" />
     <Compile Include="Type\BooleanType.cs" />
@@ -667,7 +677,6 @@
     <Compile Include="Type\GuidType.cs" />
     <Compile Include="Type\IAbstractComponentType.cs" />
     <Compile Include="Type\IAssociationType.cs" />
-    <Compile Include="Type\IdentifierBagType.cs" />
     <Compile Include="Type\IDiscriminatorType.cs" />
     <Compile Include="Type\IIdentifierType.cs" />
     <Compile Include="Type\ILiteralType.cs" />
@@ -677,9 +686,7 @@
     <Compile Include="Type\Int64Type.cs" />
     <Compile Include="Type\IType.cs" />
     <Compile Include="Type\IVersionType.cs" />
-    <Compile Include="Type\ListType.cs" />
     <Compile Include="Type\ManyToOneType.cs" />
-    <Compile Include="Type\MapType.cs" />
     <Compile Include="Type\MetaType.cs" />
     <Compile Include="Type\MutableType.cs" />
     <Compile Include="Type\NullableType.cs" />
@@ -689,7 +696,6 @@
     <Compile Include="Type\SerializableType.cs" />
     <Compile Include="Type\SerializationException.cs" />
     <Compile Include="Type\SingleType.cs" />
-    <Compile Include="Type\SortedMapType.cs" />
     <Compile Include="Type\StringClobType.cs" />
     <Compile Include="Type\StringType.cs" />
     <Compile Include="Type\TicksType.cs" />
@@ -1250,10 +1256,6 @@
     </Compile>
     <Compile Include="Collection\Generic\PersistentGenericIdentifierBag.cs" />
     <Compile Include="Collection\PersistentArrayHolder.cs" />
-    <Compile Include="Collection\PersistentBag.cs" />
-    <Compile Include="Collection\PersistentIdentifierBag.cs" />
-    <Compile Include="Collection\PersistentList.cs" />
-    <Compile Include="Collection\PersistentMap.cs" />
     <Compile Include="ConnectionReleaseMode.cs" />
     <Compile Include="Context\CallSessionContext.cs" />
     <Compile Include="Context\CurrentSessionContext.cs" />
@@ -1763,7 +1765,6 @@
     <Compile Include="Type\EnumCharType.cs" />
     <Compile Include="Type\GenericOrderedSetType.cs" />
     <Compile Include="Type\ICacheAssembler.cs" />
-    <Compile Include="Type\OrderedMapType.cs" />
     <Compile Include="Type\GenericSortedDictionaryType.cs" />
     <Compile Include="Type\GenericIdentifierBagType.cs" />
     <Compile Include="Type\GenericSortedListType.cs" />

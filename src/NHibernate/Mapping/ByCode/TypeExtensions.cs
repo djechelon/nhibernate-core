@@ -63,12 +63,12 @@ namespace NHibernate.Mapping.ByCode
 		{
 			if (expression.Body.NodeType != ExpressionType.MemberAccess)
 			{
-				if ((expression.Body.NodeType == ExpressionType.Convert) && (expression.Body.Type == typeof (object)))
+				if ((expression.Body.NodeType == ExpressionType.Convert) && (expression.Body.Type == typeof (TProperty)))
 				{
 					return ((MemberExpression) ((UnaryExpression) expression.Body).Operand).Member;
 				}
 				throw new Exception(string.Format("Invalid expression type: Expected ExpressionType.MemberAccess, Found {0}",
-												  expression.Body.NodeType));
+					expression.Body.NodeType));
 			}
 			return ((MemberExpression) expression.Body).Member;
 		}
@@ -100,7 +100,8 @@ namespace NHibernate.Mapping.ByCode
 				return memberOfDeclaringType;
 			}
 
-			return typeof (TEntity).GetProperty(memberOfDeclaringType.Name, memberOfDeclaringType.GetPropertyOrFieldType());
+			return typeof (TEntity).GetProperty(memberOfDeclaringType.Name, PropertiesOfClassHierarchy,
+			                                    null, memberOfDeclaringType.GetPropertyOrFieldType(), new System.Type[0], null);
 		}
 
 		public static MemberInfo GetMemberFromDeclaringType(this MemberInfo source)
@@ -201,6 +202,25 @@ namespace NHibernate.Mapping.ByCode
 
 			return null;
 		}
+
+
+		public static System.Type DetermineRequiredCollectionElementType(this MemberInfo collectionProperty)
+		{
+			System.Type propertyType = collectionProperty.GetPropertyOrFieldType();
+			System.Type collectionElementType = propertyType.DetermineCollectionElementType();
+
+			if (collectionElementType == null)
+			{
+				var message = string.Format(
+					"Unable to determine collection element type for the property/field '{0}' of {1}. The collection must be generic.",
+					collectionProperty.Name,
+					collectionProperty.DeclaringType != null ? collectionProperty.DeclaringType.FullName : "<global>");
+				throw new MappingException(message);
+			}
+
+			return collectionElementType;
+		}
+
 
 		public static System.Type DetermineCollectionElementOrDictionaryValueType(this System.Type genericCollection)
 		{

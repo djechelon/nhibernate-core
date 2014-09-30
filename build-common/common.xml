@@ -60,11 +60,11 @@
 		effectively SP0).
 	-->
 
-	<property name="project.version" value="4.0.0.Alpha1" overwrite="false" />
+	<property name="project.version" value="4.0.1.GA" overwrite="false" />
 	
 	<!-- This version number should be changed if, but only if, there are incompatible
 	     changes compared to the previous version. -->
-	<property name="project.default-assembly-version" value="4.0.0.1000" overwrite="false" />
+	<property name="project.default-assembly-version" value="4.0.0.4000" overwrite="false" />
 
 	<!-- Compute short project version (major.minor) using a regex -->
 	<regex input="${project.version}" pattern="^(?'shortversion'\d+\.\d+)" />
@@ -99,7 +99,11 @@
 					
 					string qualifier = matches.Groups["qualifier"].Value;
 					
+					// For official releases we must use a completely numeric version.
+					// For pre-releases, the alphanumerics should be retained, to make Nuget
+					// understand it's a pre-release.
 					if (qualifier == "GA") return ToNumericVersion(version);
+					if (qualifier == "SP") return ToNumericVersion(version);
 					
 					return String.Concat(
 						String.Join(".", new string[] { matches.Groups["major"].Value, matches.Groups["minor"].Value, matches.Groups["build"].Value }),
