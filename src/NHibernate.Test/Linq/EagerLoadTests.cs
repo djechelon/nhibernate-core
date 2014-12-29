@@ -2,7 +2,6 @@
 using NHibernate.Linq;
 using NHibernate.DomainModel.Northwind.Entities;
 using NUnit.Framework;
-using SharpTestsEx;
 
 namespace NHibernate.Test.Linq
 {
@@ -60,16 +59,15 @@ namespace NHibernate.Test.Linq
 		public void WhenFetchSuperclassCollectionThenNotThrows()
 		{
 			// NH-2277
-			session.Executing(s => s.Query<Lizard>().Fetch(x => x.Children).ToList()).NotThrows();
+			Assert.That(() => session.Query<Lizard>().Fetch(x => x.Children).ToList(), Throws.Nothing);
 			session.Close();
 		}
 
 		[Test]
 		public void FetchWithWhere()
 		{
-					// NH-2381 NH-2362
-			(from p
-				in session.Query<Product>().Fetch(a => a.Supplier)
+			// NH-2381 NH-2362
+			(from p in session.Query<Product>().Fetch(a => a.Supplier)
 			 where p.ProductId == 1
 			 select p).ToList();
 		}
